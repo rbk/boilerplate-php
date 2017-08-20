@@ -23,9 +23,14 @@
       $this->connection = $this->db->getConnection();
     }
 
-    // Require Crud
-    // Instantiate Crud Class
-    // Check request params
+    /**
+     * Handled all requests
+     * All requests are handled based on the action that is passed with them (ie create, read, update, delete)
+     *
+     * Require Crud
+     * Instantiate Crud Class
+     * Check request params
+     */
     public function init() {
       foreach($GLOBALS['routes'] as $route) {
         $columns = $route['columns'];
