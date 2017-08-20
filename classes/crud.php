@@ -19,8 +19,13 @@ class Crud
   // GET
   public function index()
   {
-    $sql = "select * from quotes";
-    echo 'Index ' . $sql;
+    $sql = "select * from $this->tablename";
+    $result = $this->connection->query($sql);
+    if ($result) {
+      while($row = $result->fetch_assoc()) {
+        print_r($row);
+      }
+    }
   }
 
   // POST
@@ -54,8 +59,13 @@ class Crud
   // GET
   public function read()
   {
-    $sql = "select * from quotes where id = " . $_GET['id'];
-    echo $sql;
+    $sql = "select * from $this->tablename where id = " . $_GET['id'];
+    $result = $this->connection->query($sql);
+    if ($result) {
+      while($row = $result->fetch_assoc()) {
+        print_r($row);
+      }
+    }
   }
 
   // POST
@@ -67,12 +77,14 @@ class Crud
   // DELETE
   public function delete()
   {
-    $sql = "delete node where id = 1";
-  }
-
-  public function init()
-  {
-
+    if (isset($_GET['id']) && isset($_GET['delete'])) {
+      $id = $_GET['id'];
+      $sql = "DELETE FROM $this->tablename WHERE id = $id";
+      $result = $this->connection->query($sql);
+      if ($result) {
+        echo 'deleted ' . $id;
+      }
+    }
   }
 
 }

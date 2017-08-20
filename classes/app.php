@@ -26,7 +26,7 @@
         $columns = $route['columns'];
         $tablename = $route['name'];
         if (isset($_GET[$tablename])) {
-          echo $tablename . '<br><pre>';
+          // echo $tablename . '<br><pre>';
           require($this->base_dir . '/classes/crud.php');
           $myclass = new Crud($this->connection, $this->base_dir, $columns, $tablename);
           // print_r($myclass);
@@ -37,7 +37,7 @@
             $myclass->index();
           }
           // Find one - WHERE
-          if (isset($_GET['id']) ) {
+          if (isset($_GET['id']) && !isset($_GET['delete'])) {
             $myclass->read($_GET['id']);
           }
           // Create one
@@ -53,8 +53,8 @@
             $myclass->delete($_GET);
           }
           //  SEARCH
-          if (isset($_GET['delete']) ) {
-            $myclass->delete($_GET);
+          if (isset($_GET['search']) ) {
+            // $myclass->delete($_GET);
           }
         }
 
