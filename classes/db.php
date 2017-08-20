@@ -108,7 +108,6 @@ class Database extends App
         );
         ";
         $this->connection->query($sql);
-        $this->createApi($model->name);
       }
       // Add route by name
       $GLOBALS['routes'][] = array(
@@ -118,25 +117,6 @@ class Database extends App
     }
 
   }
-
-  public function createApi($name)
-  {
-    if (!is_dir('api')){
-      mkdir('api');
-    }
-
-    if (!is_dir('./api/' . $name)) {
-      mkdir('./api/' . $name);
-    }
-
-    $file = './api/' . $name . '/index.php';
-    if (!is_file($file)) {
-      $fh = fopen($file, 'w+');
-      fclose($fh);
-    }
-
-  }
-
 
   public function updateSchema() {
     /**
