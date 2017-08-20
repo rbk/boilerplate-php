@@ -2,7 +2,7 @@
 require('classes/app.php');
 require('classes/db.php');
 
-$app = new App(array(
+$app_config = array(
   'database' => array(
     'host' => 'localhost',
     'user' => 'root',
@@ -24,10 +24,10 @@ $app = new App(array(
       ]
     ),
   )
-));
+);
 
+$app = new App($app_config);
 $app->init();
-
 
 
  ?>

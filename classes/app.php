@@ -15,24 +15,38 @@
       $this->base_dir = getcwd();
       $this->db = new Database($config['database']);
       $this->db->model($config['models']);
+      $this->connection = $this->db->getConnection();
     }
 
+    // Require all api routes
+    // Instanstiate classes
+    // check requests
     public function init() {
-      $this->connection = $db;
-
-      // print_r($GLOBALS['routes']);
-
       foreach($GLOBALS['routes'] as $route) {
-        // Require all api routes
         require($this->base_dir . '/api/' . $route . '/index.php');
-        // Instanstiate
-        // $classname = ucfirst($route) . 'Model';
-        // $myvar = new $classname($this->connection);
+        $classname = ucfirst($route);
+        $myclass = new $classname($this->connection, $this->base_dir);
+        // print_r($myclass);
+        // print_r(get_class_methods($myclass));
+        if (isset($_GET[$route]) && isset($_GET['all'])) {
+          $myclass->index();
+        }
+        if (isset($_GET[$route]) && isset($_GET['id']) ) {
+          $myclass->read($_GET['id']);
+        }
+        if (isset($_GET[$route]) && isset($_GET['create']) ) {
+          $myclass->create($_GET);
+        }
+        if (isset($_GET[$route]) && isset($_GET['update']) ) {
+          $myclass->update($_GET);
+        }
+        if (isset($_GET[$route]) && isset($_GET['delete']) ) {
+          $myclass->delete($_GET);
+        }
+
       }
 
     }
-
-
   }
 
 
