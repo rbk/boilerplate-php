@@ -1,7 +1,12 @@
 <?php
 
   /**
-   * App - Do some helpful stuff
+   * Main class for PHP Prototyping
+   * @description: Handles all requests base on parameters,
+   * sets up crud for models
+   * @todo Log actions and requests
+   * @todo Implement authentication for requests
+   * @todo ...
    */
   class App
   {

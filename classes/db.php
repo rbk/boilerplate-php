@@ -1,7 +1,8 @@
 <?php
 /**
  * Database helper classes
- * @description - Connects to database, builds queries for create tables
+ * @description:
+ * Connects to database, builds queries for create tables
  * based on config models.
  */
 class Database extends App
