@@ -1,16 +1,18 @@
 <?php
 
-class Quotes
+class Crud
 {
   public $connection;
   public $base_dir;
   public $columns;
+  public $tablename;
 
-  function __construct($connection, $base_dir, $columns)
+  function __construct($connection, $base_dir, $columns, $tablename)
   {
     $this->base_dir = $base_dir;
     $this->connection = $connection;
     $this->columns = $columns;
+    $this->tablename = $tablename;
     // this is an orm file, not a api route
   }
 
@@ -24,25 +26,29 @@ class Quotes
   // POST
   public function create($args)
   {
+    $cols = [];
+    $values = [];
+
     $column_names_available = [];
     foreach( $this->columns as $col => $type ) {
       $column_names_available[] = $col;
     }
-    print_r($column_names_available);
-    return;
-    // foreach( $_GET[] )
-      // echo $col;
-      // if (in_array($col, $_GET[$col])) {
-      //   echo $col;
-      // }
 
-    $quote = mysqli_real_escape_string($this->connection, $_GET['quote']);
+    // print_r($column_names_available);
 
-    $sql = "INSERT INTO quotes (quote) values ('$quote')";
-    // $result = $this->connection->query($sql);
-    print_r($result);
-    echo $sql;
-    print_r($_GET);
+    foreach( $_GET as $key => $value ) {
+      if (in_array($key, $column_names_available)) {
+        $cols[] = "`" . mysqli_real_escape_string($this->connection,$key) . "`";
+        $values[] = "'" . mysqli_real_escape_string($this->connection,$value) . "'";
+      }
+    }
+    $cols = implode(',', $cols);
+    $values = implode(',', $values);
+    $sql = "INSERT INTO `$this->tablename` ($cols) VALUES ($values)";
+    $result = $this->connection->query($sql);
+    if ($result) {
+      echo $this->connection->insert_id;
+    }
   }
 
   // GET
