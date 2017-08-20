@@ -1,6 +1,8 @@
 <?php
 /**
- *
+ * Database helper classes
+ * @description - Connects to database, builds queries for create tables
+ * based on config models.
  */
 class Database extends App
 {
@@ -10,13 +12,6 @@ class Database extends App
   private $host = null;
   private $database = null;
   private $messages = [];
-  private $crud_operations = array(
-    'create',
-    'read',
-    'update',
-    'delete'
-  );
-
 
   function __construct($config)
   {
@@ -34,17 +29,28 @@ class Database extends App
       * Create the database if it doesn't exist
       */
      $this->doesDatabaseExist();
+
+     /**
+      * Store the connection to mysql
+      */
      $this->connection = new mysqli($this->host, $this->user, $this->password, $this->database);
      if (!$this->connection) {
         die('Could not connect.');
      }
   }
 
+  /**
+   * Get connection to database
+   * @return Mysql connection string
+   */
   public function getConnection()
   {
     return $this->connection;
   }
 
+  /**
+   * Find out if we can connect to the database
+   */
   private function connectTest()
   {
     $connection = new mysqli($this->host, $this->user, $this->password);
@@ -54,6 +60,9 @@ class Database extends App
     }
   }
 
+  /**
+   * Check to see if the database exists
+   */
   private function doesDatabaseExist() {
     $connection = new mysqli($this->host, $this->user, $this->password);
     $sql = "SHOW DATABASES LIKE '$this->database'";
@@ -63,17 +72,28 @@ class Database extends App
     }
   }
 
+  /**
+   * Create database if it doesn't exist
+   */
   private function createDatabase()
   {
     $connection = new mysqli($this->host, $this->user, $this->password);
     $result = $connection->query("CREATE DATABASE IF NOT EXISTS $this->database;");
   }
 
+  /**
+   * Alias for createTable
+   */
   public function model($schema)
   {
     $this->createTable($schema);
   }
 
+  /**
+   * Build queries to create tables and load models
+   * @todo Save schema to database
+   * @todo Add column options for tables
+   */
   public function createTable($schema)
   {
     foreach( $schema as $model) {
@@ -118,26 +138,23 @@ class Database extends App
 
   }
 
+  /**
+   * Update database based on model changes
+   * @todo Migrate tables with alters
+   * @todo Save model history
+   */
   public function updateSchema() {
     /**
-     * examples
-
-     //
-     ALTER table 'tablename' DROP 'columnname'
-     ALTER TABLE `quotes` CHANGE `name` `name` VARCHAR(200);
-
+     * Examples:
+     * ALTER table 'tablename' DROP 'columnname'
+     * ALTER TABLE `quotes` CHANGE `name` `name` VARCHAR(200);
      */
-
   }
 
   /**
-   * Return Resulting array or true/false for update and insert
+   * Advanced query building functions I may need
    */
-  public function query($string, $array = array())
-  {
-
-  }
-
+  public function query($string, $array = array()) {}
   private function update() {}
   private function insert() {}
   private function select() {}
