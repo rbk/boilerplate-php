@@ -19,12 +19,14 @@ class Crud
   // GET
   public function index()
   {
+    $response = [];
     $sql = "select * from $this->tablename";
     $result = $this->connection->query($sql);
     if ($result) {
       while($row = $result->fetch_assoc()) {
-        print_r($row);
+        $response[] = $row;
       }
+      $this->display_result($response);
     }
   }
 
@@ -52,26 +54,31 @@ class Crud
     $sql = "INSERT INTO `$this->tablename` ($cols) VALUES ($values)";
     $result = $this->connection->query($sql);
     if ($result) {
-      echo $this->connection->insert_id;
+      $this->display_result($this->connection->insert_id);
     }
   }
 
   // GET
   public function read()
   {
+    $response = [];
     $sql = "select * from $this->tablename where id = " . $_GET['id'];
     $result = $this->connection->query($sql);
-    if ($result) {
+    if ($result->num_rows > 0) {
       while($row = $result->fetch_assoc()) {
-        print_r($row);
+        $response[] = $row;
       }
+      $this->display_result($response);
+    } else {
+      $this->display_result(0);
     }
+
   }
 
   // POST
   public function update()
   {
-    $sql = "update quote where id = 1";
+    $sql = "UPDATE $this->tablename SET lastname='Doe' WHERE id=2";
   }
 
   // DELETE
@@ -82,9 +89,21 @@ class Crud
       $sql = "DELETE FROM $this->tablename WHERE id = $id";
       $result = $this->connection->query($sql);
       if ($result) {
-        echo 'deleted ' . $id;
+        $this->display_result('deleted ' . $id);
       }
     }
+  }
+
+  public function display_result($arg)
+  {
+    if (is_array($arg)) {
+      echo json_encode($arg);
+    } else {
+      echo json_encode(array(
+        'result' => $arg
+      ));
+    }
+
   }
 
 }
