@@ -23,11 +23,14 @@
     // check requests
     public function init() {
       foreach($GLOBALS['routes'] as $route) {
+        $columns = $route['columns'];
+        $route = $route['name'];
         require($this->base_dir . '/api/' . $route . '/index.php');
         $classname = ucfirst($route);
-        $myclass = new $classname($this->connection, $this->base_dir);
+        $myclass = new $classname($this->connection, $this->base_dir, $columns);
         // print_r($myclass);
         // print_r(get_class_methods($myclass));
+
         if (isset($_GET[$route]) && isset($_GET['all'])) {
           $myclass->index();
         }

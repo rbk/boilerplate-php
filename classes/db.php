@@ -111,7 +111,10 @@ class Database extends App
         $this->createApi($model->name);
       }
       // Add route by name
-      $GLOBALS['routes'][] = $model->name;
+      $GLOBALS['routes'][] = array(
+        'name' => $model->name,
+        'columns' => $model->columns,
+      );
     }
 
   }

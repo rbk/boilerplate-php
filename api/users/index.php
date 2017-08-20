@@ -30,7 +30,8 @@ class Users
   // GET
   public function read()
   {
-    $sql = "select * from quotes where id = 1";
+    $sql = "select * from users where id = " . $_GET['id'];
+    echo $sql;
   }
 
   // POST

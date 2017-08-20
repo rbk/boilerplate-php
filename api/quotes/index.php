@@ -4,13 +4,13 @@ class Quotes
 {
   public $connection;
   public $base_dir;
+  public $columns;
 
-  function __construct($connection, $base_dir)
+  function __construct($connection, $base_dir, $columns)
   {
     $this->base_dir = $base_dir;
     $this->connection = $connection;
-    // echo $this->base_dir;
-    // print_r($this->connection);
+    $this->columns = $columns;
     // this is an orm file, not a api route
   }
 
@@ -24,7 +24,21 @@ class Quotes
   // POST
   public function create($args)
   {
-    $sql = "insert into quotes values (1,2,3)";
+
+    foreach( $this->columns as $col => $type ) {
+      echo $col;
+      if (in_array($col, $_GET[$col])) {
+        echo $col;
+      }
+    }
+
+    $quote = mysqli_real_escape_string($this->connection, $_GET['quote']);
+
+    $sql = "INSERT INTO quotes (quote) values ('$quote')";
+    // $result = $this->connection->query($sql);
+    print_r($result);
+    echo $sql;
+    print_r($_GET);
   }
 
   // GET
