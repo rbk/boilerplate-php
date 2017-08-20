@@ -4,6 +4,7 @@
  * @description:
  * Connects to database, builds queries for create tables
  * based on config models.
+ * @todo Abstract query builder
  */
 class Database extends App
 {

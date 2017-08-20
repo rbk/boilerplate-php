@@ -46,7 +46,7 @@
           if (isset($_GET['all'])) {
             $myclass->index();
           }
-          // Find one - WHERE
+          // Find one - WHERE CLAUSES
           if (isset($_GET['id']) && !isset($_GET['delete'])) {
             $myclass->read($_GET['id']);
           }
@@ -54,11 +54,11 @@
           if (isset($_GET['create']) ) {
             $myclass->create($_GET);
           }
-          // Update one - WHERE
+          // Update one - WHERE CLAUSES
           if (isset($_GET['update']) ) {
             $myclass->update($_GET);
           }
-          // Delete one
+          // Delete one - WHERE CLAUSES
           if (isset($_GET['delete']) ) {
             $myclass->delete($_GET);
           }

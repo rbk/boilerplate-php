@@ -98,12 +98,19 @@ class Crud
     }
   }
 
-  // SEARCH
+  /**
+   * Search
+   * @todo Build this query handler
+   */
   public function search()
   {
     $this->display_result('Search');
   }
 
+  /**
+   * Output JSON everwhere
+   * @todo Maybe make this the default but optionally something else like XML
+   */
   public function display_result($arg)
   {
     if (is_array($arg)) {
