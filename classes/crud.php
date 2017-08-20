@@ -94,6 +94,12 @@ class Crud
     }
   }
 
+  // SEARCH
+  public function search()
+  {
+    $this->display_result('Search');
+  }
+
   public function display_result($arg)
   {
     if (is_array($arg)) {

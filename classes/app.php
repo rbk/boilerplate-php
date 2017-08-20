@@ -18,19 +18,19 @@
       $this->connection = $this->db->getConnection();
     }
 
-    // Require all api routes
-    // Instanstiate classes
-    // check requests
+    // Require Crud
+    // Instantiate Crud Class
+    // Check request params
     public function init() {
       foreach($GLOBALS['routes'] as $route) {
         $columns = $route['columns'];
         $tablename = $route['name'];
+
         if (isset($_GET[$tablename])) {
-          // echo $tablename . '<br><pre>';
+
           require($this->base_dir . '/classes/crud.php');
+
           $myclass = new Crud($this->connection, $this->base_dir, $columns, $tablename);
-          // print_r($myclass);
-          // print_r(get_class_methods($myclass));
 
           // ALL - LIMIT
           if (isset($_GET['all'])) {
@@ -54,7 +54,7 @@
           }
           //  SEARCH
           if (isset($_GET['search']) ) {
-            // $myclass->delete($_GET);
+            $myclass->search($_GET);
           }
         }
 
