@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Query system for basic CRUD operations
  * @todo Abstract query building
@@ -168,7 +167,6 @@ class Crud
         'result' => $arg
       ));
     }
-
   }
 
 }

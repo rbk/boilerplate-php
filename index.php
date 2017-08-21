@@ -23,6 +23,14 @@ $app_config = array(
         'email' => 'varchar(255)',
       ]
     ),
+    array(
+      'name' => 'todos',
+      'columns' => [
+        'text' => 'varchar(255)',
+        'status' => 'varchar(50)',
+        'completed_date' => 'date'
+      ]
+    ),
   )
 );
 
