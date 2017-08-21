@@ -17,7 +17,41 @@ class Crud
     $this->connection = $connection;
     $this->columns = $columns;
     $this->tablename = $tablename;
+    $this->processGetParams();
     // this is an orm file, not a api route
+  }
+
+  public function processGetParams()
+  {
+    $column_names_available = $this->getColumnNames();
+
+    $this->columns = [];
+    $this->values = [];
+    $this->update = [];
+
+    foreach( $_GET as $key => $value ) {
+      if (in_array($key, $column_names_available)) {
+        $escaped_key = mysqli_real_escape_string($this->connection,$key);
+        $escaped_value = mysqli_real_escape_string($this->connection,$value);
+        $this->columns[] = "`" . $escaped_key . "`";
+        $this->values[] = "'" . $escaped_value . "'";
+        $this->update[] = "`" . $escaped_key . "` = '" .  $escaped_value . "'";
+      }
+    }
+    $this->columns = implode(',', $this->columns);
+    $this->values = implode(',', $this->values);
+    $this->update = implode(',', $this->update);
+
+  }
+
+  public function getColumnNames()
+  {
+    $column_names_available = [];
+    foreach( $this->columns as $col => $type ) {
+      $column_names_available[] = $col;
+    }
+    return $column_names_available;
+
   }
 
   // GET
@@ -35,27 +69,9 @@ class Crud
   }
 
   // POST
-  public function create($args)
+  public function create()
   {
-    $cols = [];
-    $values = [];
-
-    $column_names_available = [];
-    foreach( $this->columns as $col => $type ) {
-      $column_names_available[] = $col;
-    }
-
-    // print_r($column_names_available);
-
-    foreach( $_GET as $key => $value ) {
-      if (in_array($key, $column_names_available)) {
-        $cols[] = "`" . mysqli_real_escape_string($this->connection,$key) . "`";
-        $values[] = "'" . mysqli_real_escape_string($this->connection,$value) . "'";
-      }
-    }
-    $cols = implode(',', $cols);
-    $values = implode(',', $values);
-    $sql = "INSERT INTO `$this->tablename` ($cols) VALUES ($values)";
+    $sql = "INSERT INTO `$this->tablename` ($this->columns) VALUES ($this->values)";
     $result = $this->connection->query($sql);
     if ($result) {
       $this->display_result($this->connection->insert_id);
@@ -92,7 +108,24 @@ class Crud
   // POST
   public function update()
   {
-    $sql = "UPDATE $this->tablename SET lastname='Doe' WHERE id=2";
+    $id = mysqli_real_escape_string($this->connection,$_GET['id']);
+    $sql = "UPDATE $this->tablename SET $this->update WHERE id=$id";
+    $result = $this->connection->query($sql);
+    if ($result) {
+      $this->display_result(array(
+        'message' => 'Update row from ' . $this->tablename . ' with id ' . $id,
+        'updated' => 1,
+        'error' => 0,
+        'query' => $sql,
+      ));
+    } else {
+      $this->display_result(array(
+        'message' => 'Something went wrong with the update.',
+        'updated' => 0,
+        'error' => 1,
+        'query' => $sql,
+      ));
+    }
   }
 
   // DELETE

@@ -47,16 +47,16 @@
             $myclass->index();
           }
           // Find one - WHERE CLAUSES
-          if (isset($_GET['id']) && !isset($_GET['delete'])) {
+          if (isset($_GET['id']) && !isset($_GET['delete']) && !isset($_GET['update']) && !isset($_GET['create'])) {
             $myclass->read($_GET['id']);
           }
           // Create one
-          if (isset($_GET['create']) ) {
-            $myclass->create($_GET);
+          if (isset($_GET['create'])) {
+            $myclass->create();
           }
           // Update one - WHERE CLAUSES
-          if (isset($_GET['update']) ) {
-            $myclass->update($_GET);
+          if (isset($_GET['update']) && isset($_GET['id'])) {
+            $myclass->update();
           }
           // Delete one - WHERE CLAUSES
           if (isset($_GET['delete']) ) {
