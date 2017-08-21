@@ -59,6 +59,12 @@ class Crud
     $result = $this->connection->query($sql);
     if ($result) {
       $this->display_result($this->connection->insert_id);
+    } else {
+      $this->display_result(array(
+        'message' => 'There was a problem inserting into the database.',
+        'error' => 1,
+        'query' => $sql,
+      ));
     }
   }
 
