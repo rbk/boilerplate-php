@@ -80,7 +80,11 @@ class Crud
       }
       $this->display_result($response);
     } else {
-      $this->display_result(0);
+      $this->display_result(array(
+        'message' => 'No results found.',
+        'row_count' => 0,
+        'query' => $sql,
+      ));
     }
 
   }
@@ -99,7 +103,12 @@ class Crud
       $sql = "DELETE FROM $this->tablename WHERE id = $id";
       $result = $this->connection->query($sql);
       if ($result) {
-        $this->display_result('deleted ' . $id);
+        $this->display_result(array(
+          'message' => 'Deleted row from ' . $this->tablename . ' with id ' . $id,
+          'deleted' => 1,
+          'error' => 0,
+          'query' => $sql,
+        ));
       }
     }
   }
