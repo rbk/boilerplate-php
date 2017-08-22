@@ -35,6 +35,12 @@ class App
    * Check request params
    */
   public function init() {
+
+    $method = $_SERVER['REQUEST_METHOD'];
+    $posted_json = json_decode(file_get_contents('php://input'));
+    echo json_encode($posted_json);
+    return;
+
     if (count($GLOBALS['routes']) < 1){
       echo json_encode(array(
         'message' => 'No models available. See README file for more information',

@@ -144,6 +144,7 @@ class Database extends App
    * Update database based on model changes
    * @todo Migrate tables with alters
    * @todo Save model history
+   * http://www.dofactory.com/sql/update
    */
   public function updateSchema() {
     /**
