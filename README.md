@@ -1,5 +1,8 @@
 # PHP Boilerplate for prototyping
 
+# Next action:
+Important: Break down request content type in request handler. Allow requests to be made via multipart form, ajax, and get.
+
 I wrote this very simple application to easily create data models to interact with. The data structure is created via a configuration object and creates a query interface that returns JSON.
 
 ### What this does

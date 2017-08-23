@@ -38,7 +38,10 @@ class App
 
     $method = $_SERVER['REQUEST_METHOD'];
     $posted_json = json_decode(file_get_contents('php://input'));
-    echo json_encode($posted_json);
+    // echo $method;
+    // $posted_json->method = $method;
+    echo json_encode(getallheaders());
+    // echo json_encode($_POST);
     return;
 
     if (count($GLOBALS['routes']) < 1){
