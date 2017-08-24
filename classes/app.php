@@ -65,9 +65,6 @@ class App
       $columns = $route['columns'];
       $tablename = $route['name'];
 
-      // echo json_encode($this->params);
-      // return;
-
       if (isset($this->params['model']) && $this->params['model'] == $tablename || isset($this->params[$tablename]) ) {
 
         require($this->base_dir . '/classes/crud.php');
@@ -81,8 +78,6 @@ class App
         }
         // Find one - WHERE CLAUSES
         if (isset($this->params['id']) && !isset($this->params['delete']) && !isset($this->params['update']) && !isset($this->params['create'])) {
-          echo json_encode($this->params);
-          return;
           $myclass->read($this->params['id']);
           return;
         }

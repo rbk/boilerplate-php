@@ -14,7 +14,6 @@ class Crud
 
   function __construct($connection, $base_dir, $columns, $tablename, $params)
   {
-    $this->method = 'GET';
     $this->base_dir = $base_dir;
     $this->connection = $connection;
     $this->columns = $columns;
