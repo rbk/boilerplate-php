@@ -9,13 +9,17 @@ class Crud
   public $base_dir;
   public $columns;
   public $tablename;
+  public $params;
+  public $method;
 
-  function __construct($connection, $base_dir, $columns, $tablename)
+  function __construct($connection, $base_dir, $columns, $tablename, $params)
   {
+    $this->method = 'GET';
     $this->base_dir = $base_dir;
     $this->connection = $connection;
     $this->columns = $columns;
     $this->tablename = $tablename;
+    $this->params = $params;
     $this->processGetParams();
     // this is an orm file, not a api route
   }
@@ -23,12 +27,11 @@ class Crud
   public function processGetParams()
   {
     $column_names_available = $this->getColumnNames();
-
     $this->columns = [];
     $this->values = [];
     $this->update = [];
 
-    foreach( $_GET as $key => $value ) {
+    foreach( $this->params as $key => $value ) {
       if (in_array($key, $column_names_available)) {
         $escaped_key = mysqli_real_escape_string($this->connection,$key);
         $escaped_value = mysqli_real_escape_string($this->connection,$value);
@@ -86,8 +89,9 @@ class Crud
   // GET
   public function read()
   {
+    $id = mysqli_real_escape_string($this->connection,$this->params['id']);
     $response = [];
-    $sql = "select * from $this->tablename where id = " . $_GET['id'];
+    $sql = "select * from $this->tablename where id = " . $id;
     $result = $this->connection->query($sql);
     if ($result->num_rows > 0) {
       while($row = $result->fetch_assoc()) {
@@ -107,7 +111,7 @@ class Crud
   // POST
   public function update()
   {
-    $id = mysqli_real_escape_string($this->connection,$_GET['id']);
+    $id = mysqli_real_escape_string($this->connection,$this->params['id']);
     $sql = "UPDATE $this->tablename SET $this->update WHERE id=$id";
     $result = $this->connection->query($sql);
     if ($result) {
@@ -130,8 +134,8 @@ class Crud
   // DELETE
   public function delete()
   {
-    if (isset($_GET['id']) && isset($_GET['delete'])) {
-      $id = $_GET['id'];
+    $id = mysqli_real_escape_string($this->connection,$this->params['id']);
+    if (isset($this->params['id']) && isset($this->params['delete'])) {
       $sql = "DELETE FROM $this->tablename WHERE id = $id";
       $result = $this->connection->query($sql);
       if ($result) {

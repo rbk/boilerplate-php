@@ -3,6 +3,25 @@
 # Next action:
 Important: Break down request content type in request handler. Allow requests to be made via multipart form, ajax, and get.
 
+Content type based on request:
+
+fetch:
+  method: POST
+  content_type: "text/plain;charset=UTF-8"
+
+fetch:
+  method: GET
+  content_type: ""
+
+form:
+  method: POST
+  content_type: "application/x-www-form-urlencoded"
+
+form:
+  method: GET
+  content_type: ""
+
+
 I wrote this very simple application to easily create data models to interact with. The data structure is created via a configuration object and creates a query interface that returns JSON.
 
 ### What this does

@@ -17,6 +17,8 @@ class App
   protected $base_dir;
   protected $connection;
   protected $db;
+  protected $method;
+  protected $headers;
 
   function __construct($config)
   {
@@ -24,6 +26,8 @@ class App
     $this->db = new Database($config['database']);
     $this->db->model($config['models']);
     $this->connection = $this->db->getConnection();
+    $this->method = (isset($_SERVER['REQUEST_METHOD'])) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+    $this->headers = getallheaders();
   }
 
   /**
@@ -36,13 +40,19 @@ class App
    */
   public function init() {
 
-    $method = $_SERVER['REQUEST_METHOD'];
-    $posted_json = json_decode(file_get_contents('php://input'));
-    // echo $method;
-    // $posted_json->method = $method;
-    echo json_encode(getallheaders());
-    // echo json_encode($_POST);
-    return;
+    if ($this->method == 'POST') {
+      // Posting from HTML form
+      if (strpos($this->headers['Content-Type'], 'x-www-form-urlencoded') !== false) {
+        $this->params = $_POST;
+      }
+      // Ajax POST
+      if (strpos($this->headers['Content-Type'], 'plain') !== false) {
+        $this->params = (array)json_decode(file_get_contents('php://input'));
+      }
+    }
+    if ($this->method == 'GET') {
+      $this->params = $_GET;
+    }
 
     if (count($GLOBALS['routes']) < 1){
       echo json_encode(array(
@@ -50,44 +60,50 @@ class App
         'error' => 1
       ));
     }
+
     foreach($GLOBALS['routes'] as $route) {
       $columns = $route['columns'];
       $tablename = $route['name'];
 
-      if (isset($_GET[$tablename])) {
+      // echo json_encode($this->params);
+      // return;
+
+      if (isset($this->params['model']) && $this->params['model'] == $tablename || isset($this->params[$tablename]) ) {
 
         require($this->base_dir . '/classes/crud.php');
 
-        $myclass = new Crud($this->connection, $this->base_dir, $columns, $tablename);
+        $myclass = new Crud($this->connection, $this->base_dir, $columns, $tablename, $this->params);
 
         // ALL - LIMIT
-        if (isset($_GET['all'])) {
+        if (isset($this->params['all'])) {
           $myclass->index();
           return;
         }
         // Find one - WHERE CLAUSES
-        if (isset($_GET['id']) && !isset($_GET['delete']) && !isset($_GET['update']) && !isset($_GET['create'])) {
-          $myclass->read($_GET['id']);
+        if (isset($this->params['id']) && !isset($this->params['delete']) && !isset($this->params['update']) && !isset($this->params['create'])) {
+          echo json_encode($this->params);
+          return;
+          $myclass->read($this->params['id']);
           return;
         }
         // Create one
-        if (isset($_GET['create'])) {
+        if (isset($this->params['create'])) {
           $myclass->create();
           return;
         }
         // Update one - WHERE CLAUSES
-        if (isset($_GET['update']) && isset($_GET['id'])) {
+        if (isset($this->params['update']) && isset($this->params['id'])) {
           $myclass->update();
           return;
         }
         // Delete one - WHERE CLAUSES
-        if (isset($_GET['delete']) ) {
-          $myclass->delete($_GET);
+        if (isset($this->params['delete']) ) {
+          $myclass->delete($this->params);
           return;
         }
         //  SEARCH
-        if (isset($_GET['search']) ) {
-          $myclass->search($_GET);
+        if (isset($this->params['search']) ) {
+          $myclass->search($this->params);
           return;
         }
       }
