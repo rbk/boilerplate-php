@@ -114,12 +114,17 @@ class Crud
     $sql = "UPDATE $this->tablename SET $this->update WHERE id=$id";
     $result = $this->connection->query($sql);
     if ($result) {
-      $this->display_result(array(
-        'message' => 'Update row from ' . $this->tablename . ' with id ' . $id,
-        'updated' => 1,
-        'error' => 0,
-        'query' => $sql,
-      ));
+      $this->display_result(
+        array_merge($this->params,
+          array(
+              'message' => 'Update row from ' . $this->tablename . ' with id ' . $id,
+              'updated' => 1,
+              'error' => 0,
+              'query' => $sql,
+              'id' => $id,
+            )
+        )
+      );
     } else {
       $this->display_result(array(
         'message' => 'Something went wrong with the update.',
@@ -138,12 +143,17 @@ class Crud
       $sql = "DELETE FROM $this->tablename WHERE id = $id";
       $result = $this->connection->query($sql);
       if ($result) {
-        $this->display_result(array(
-          'message' => 'Deleted row from ' . $this->tablename . ' with id ' . $id,
-          'deleted' => 1,
-          'error' => 0,
-          'query' => $sql,
-        ));
+        $this->display_result(
+          array_merge($this->params,
+            array(
+                'message' => 'Deleted row from ' . $this->tablename . ' with id ' . $id,
+                'deleted' => 1,
+                'error' => 0,
+                'query' => $sql,
+                'id' => $id,
+              )
+          )
+        );
       }
     }
   }

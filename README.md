@@ -1,50 +1,71 @@
-# PHP Boilerplate for prototyping
+# PHP Boilerplate (prototyping tool)
 
-# Next action:
-Important: Break down request content type in request handler. Allow requests to be made via multipart form, ajax, and get.
+### About
 
-Content type based on request:
-
-fetch:
-  method: POST
-  content_type: "text/plain;charset=UTF-8"
-
-fetch:
-  method: GET
-  content_type: ""
-
-form:
-  method: POST
-  content_type: "application/x-www-form-urlencoded"
-
-form:
-  method: GET
-  content_type: ""
-
-
-I wrote this very simple application to easily create data models to interact with. The data structure is created via a configuration object and creates a query interface that returns JSON.
+I wrote this very simple application to easily create data models to interact with (Think RoR or Django). The data structure is created via a configuration object and creates a query interface that returns JSON objects. ***The cool part is that the application only has one endpoint.***
 
 ### What this does
- - Creates database and tables via configuration
- - Provides a query interface for every model
+1. Creates database and tables via configuration
+2. Provides a query interface for every model
 
 ### How to query the database:
-You can query the database via $_GET parameters. All queries return JSON.
+You can query the database via GET/POST parameters, and by sending a JSON string. All queries return JSON.
 
-#### Index
-https://{url}?{model-name}&all
 
-#### Create
-https://{url}?{model-name}&create&key=value&key=value
+#### Via Ajax:
+Payload:<br>
+Index
+```
+{
+  model: 'todos',
+  all: true
+}
+```
+Create
+```
+{
+  model: 'todos',
+  create: true,
+  myfield: 'myvalue',
+  mycolumn: 'mycolumnvalue'
+}
+```
+Update
+```
+{
+  id: '<item-id>'
+  model: 'todos',
+  update: true,
+  myfield: 'myNEWvalue',
+  mycolumn: 'myNEWcolumnvalue'
+}
+```
 
-#### Read
-https://{url}?{model-name}&id=1
+etc...
 
-#### Update
-https://{url}?{model-name}&update&key=value&key=value
+#### Via URL String:
 
-#### Delete
-https://{url}?{model-name}&delete&id=1
+Index<br>
+`https://{url}?{model-name}&all`
+
+Create<br> `https://{url}?{model-name}&create&key=value&key=value`
+
+Read<br>
+`https://{url}?{model-name}&id=1`
+
+Update<br>
+`https://{url}?{model-name}&update&key=value&key=value`
+
+Delete<br>
+`https://{url}?{model-name}&delete&id=1`
+
+#### Via Post:
+Sample post from form:
+```
+id: <id>,
+update: true,
+key: value
+```
 
 ### Goals
  - Quickly start prototyping
@@ -91,6 +112,9 @@ $app_config = array(
 - Add testing
 - Query Hooks (before/after)
 - Convert $app_config to YAML? Maybe.
+
+### Done
+- Break down request content type in request handler. Allow requests to be made via multipart form, ajax, and get.
 
 ## Contributing
 
