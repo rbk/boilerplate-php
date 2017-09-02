@@ -66,8 +66,7 @@ class Crud
       while($row = $result->fetch_assoc()) {
         $response[] = $row;
       }
-      $response['sql'] = $sql;
-      $this->display_result(array_merge($response,$this->params));
+      $this->display_result($response);
     }
   }
 
@@ -77,7 +76,14 @@ class Crud
     $sql = "INSERT INTO `$this->tablename` ($this->columns) VALUES ($this->values)";
     $result = $this->connection->query($sql);
     if ($result) {
-      $this->display_result($this->connection->insert_id);
+      $this->display_result(
+        array_merge(
+          array(
+            'id' => $this->connection->insert_id,
+            'query' => $sql,
+          ),$this->params
+        )
+      );
     } else {
       $this->display_result(array(
         'message' => 'There was a problem inserting into the database.',
@@ -90,7 +96,9 @@ class Crud
   // GET
   public function read()
   {
-    $id = mysqli_real_escape_string($this->connection,$this->params['id']);
+    $id = $this->params['id'];
+    settype($id, 'integer');
+
     $response = [];
     $sql = "select * from $this->tablename where id = " . $id;
     $result = $this->connection->query($sql);
@@ -149,8 +157,6 @@ class Crud
       settype($id, 'integer');
 
       $sql = "DELETE FROM $this->tablename WHERE id = $id";
-      $this->display_result($sql);
-      return;
       $result = $this->connection->query($sql);
       if ($result) {
         $this->display_result(
