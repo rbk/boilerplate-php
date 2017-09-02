@@ -25,6 +25,7 @@ class Crud
 
   public function processGetParams()
   {
+    // Available column from model defined in configuration
     $column_names_available = $this->getColumnNames();
     $this->columns = [];
     $this->values = [];
@@ -65,7 +66,8 @@ class Crud
       while($row = $result->fetch_assoc()) {
         $response[] = $row;
       }
-      $this->display_result($response);
+      $response['sql'] = $sql;
+      $this->display_result(array_merge($response,$this->params));
     }
   }
 
@@ -110,7 +112,8 @@ class Crud
   // POST
   public function update()
   {
-    $id = mysqli_real_escape_string($this->connection,$this->params['id']);
+    $id = $this->params['id'];
+    settype($id, 'integer');
     $sql = "UPDATE $this->tablename SET $this->update WHERE id=$id";
     $result = $this->connection->query($sql);
     if ($result) {
@@ -140,7 +143,14 @@ class Crud
   {
     $id = mysqli_real_escape_string($this->connection,$this->params['id']);
     if (isset($this->params['id']) && isset($this->params['delete'])) {
+
+      // Validate input as integer.
+      // Very important as it removes strings contained other SQL statements
+      settype($id, 'integer');
+
       $sql = "DELETE FROM $this->tablename WHERE id = $id";
+      $this->display_result($sql);
+      return;
       $result = $this->connection->query($sql);
       if ($result) {
         $this->display_result(

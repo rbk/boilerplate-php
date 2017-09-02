@@ -37,13 +37,5 @@ $app_config = array(
 
 $app = new App($app_config);
 $app->init();
-die();
-if (!isset($_POST['text'])) :
- ?>
- <form class="" action="" method="POST">
-   <input type="text" name="text" value="my todo text">
-   <input type="text" name="status" value="not complete">
-   <input type="submit" >
- </form>
 
- <?php endif; ?>
+?>
