@@ -2,7 +2,7 @@
 /**
  * Database helper classes
  * @description:
- * Connects to database, builds queries for create tables
+ * Connects to database, builds queries for creating tables
  * based on config models.
  * @todo Abstract query builder
  */
@@ -116,21 +116,29 @@ class Database extends App
           if ( $index == $column_max_index ) {
             $seperator = '';
           }
-          $sql_columns .= $name . ' ' . $type . $seperator;
+          $sql_columns .= $name . ' ' . $type . $seperator . "\n";
           $index = $index + 1;
         }
       }
+
+      if (isset($model->foreign_key) && isset($model->references)) {
+        $sql_columns = $sql_columns . ', FOREIGN KEY' . '(' . $model->foreign_key . ') ' . 'REFERENCES ' . $model->references . '(id)';
+      }
+
+
       // create table
       $table = $this->connection->query("SHOW TABLES LIKE '$model->name';");
-      if ($table->num_rows == 0) {
+      // if ($table->num_rows == 0) {
         $sql = "
-        CREATE TABLE
-        $model->name (
-          $sql_columns
-        );
+          CREATE TABLE
+          $model->name (
+            $sql_columns
+          );
         ";
-        $this->connection->query($sql);
-      }
+        error_log('Disabled CREATE TABLE execution');
+        // $this->connection->query($sql);
+      // }
+      print_r($sql);
       // Add route by name
       $GLOBALS['routes'][] = array(
         'name' => $model->name,

@@ -25,6 +25,10 @@ class App
     $this->base_dir = getcwd();
     $this->db = new Database($config['database']);
     $this->db->model($config['models']);
+
+    error_log('Ending app in app.php for debugging');
+    return;
+
     $this->connection = $this->db->getConnection();
     $this->method = (isset($_SERVER['REQUEST_METHOD'])) ? $_SERVER['REQUEST_METHOD'] : 'GET';
     $this->headers = getallheaders();
