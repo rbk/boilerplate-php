@@ -19,15 +19,19 @@ class App
   protected $db;
   protected $method;
   protected $headers;
+  private $debug;
 
   function __construct($config)
   {
+    $this->debug = $config['debug'];
     $this->base_dir = getcwd();
-    $this->db = new Database($config['database']);
+    $this->db = new Database($config['database'], $this->debug);
     $this->db->model($config['models']);
 
-    error_log('Ending app in app.php for debugging');
-    return;
+    if ($this->debug) {
+      error_log('Ending app in app.php for debugging database table creation');
+      return;
+    }
 
     $this->connection = $this->db->getConnection();
     $this->method = (isset($_SERVER['REQUEST_METHOD'])) ? $_SERVER['REQUEST_METHOD'] : 'GET';
@@ -107,10 +111,14 @@ class App
         }
       }
     }
-    echo json_encode(array(
-      'message' => 'No proper request made.',
-      'error' => 1
-    ));
+    $default_message = 'No proper request made.';
+    if ($this->debug) {
+      $default_message = 'Debug mode on.';
+    } else {
+      echo json_encode(array(
+        'message' => $default_message,
+      ));
+    }
 
   }
 }

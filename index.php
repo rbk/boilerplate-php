@@ -4,6 +4,7 @@ require('classes/app.php');
 require('classes/db.php');
 
 $app_config = array(
+  'debug' => false,
   'database' => array(
     'host' => 'localhost',
     'user' => 'root',
@@ -26,6 +27,13 @@ $app_config = array(
   //       'password_hash' => 'varchar(255)'
   //     ]
   //   ),
+  array(
+    'name' => 'lists',
+    'columns' => [
+      'title' => 'varchar(255)',
+      'description' => 'text(500)'
+      ]
+    ),
     array(
       'name' => 'todos',
       'columns' => [
@@ -38,17 +46,10 @@ $app_config = array(
       'references' => 'lists',
       'sample_sql_references' => 'FOREIGN KEY (list_id) REFERENCES lists(id)',
     ),
-    array(
-      'name' => 'lists',
-      'columns' => [
-        'title' => 'varchar(255)',
-        'description' => 'text(500)'
-      ]
-    )
   )
 );
 
 $app = new App($app_config);
-// $app->init();
+$app->init();
 
 ?>

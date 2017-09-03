@@ -14,13 +14,15 @@ class Database extends App
   private $host = null;
   private $database = null;
   private $messages = [];
+  private $debug = false;
 
-  function __construct($config)
+  function __construct($config, $debug)
   {
     $this->user = $config['user'];
     $this->password = $config['password'];
     $this->host = $config['host'];
     $this->database = $config['database'];
+    $this->debug = $debug;
 
     /**
      * Check db connection
@@ -125,20 +127,26 @@ class Database extends App
         $sql_columns = $sql_columns . ', FOREIGN KEY' . '(' . $model->foreign_key . ') ' . 'REFERENCES ' . $model->references . '(id)';
       }
 
+      $sql = "
+        CREATE TABLE
+        $model->name (
+          $sql_columns
+        );
+      ";
 
-      // create table
-      $table = $this->connection->query("SHOW TABLES LIKE '$model->name';");
-      // if ($table->num_rows == 0) {
-        $sql = "
-          CREATE TABLE
-          $model->name (
-            $sql_columns
-          );
-        ";
-        error_log('Disabled CREATE TABLE execution');
-        // $this->connection->query($sql);
-      // }
-      print_r($sql);
+      if ($this->debug) {
+        print_r($sql);
+      } else {
+        /*
+        * Attempt to Create Table
+        * @todo Need to define where alters will will happend and when
+        */
+        $table = $this->connection->query("SHOW TABLES LIKE '$model->name';");
+        if ($table->num_rows == 0) {
+          $this->connection->query($sql);
+        }
+      }
+
       // Add route by name
       $GLOBALS['routes'][] = array(
         'name' => $model->name,

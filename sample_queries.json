@@ -1,0 +1,36 @@
+{
+  "select": true,
+  "model": "todos",
+  "where": true,
+  "text": true
+  "like": "machine learning", // WHERE * LIKE '%machine learning%'
+},
+{
+  "more difficult" : "", // $todos->select().where('text').like('machine learning')
+}
+{
+  "create": true, // Simple create with reference
+  "model": "todos",
+  "text": "Work on more machine learning programs.",
+  "status": "pending",
+  "list_id": 1, //Check for reference
+},
+{
+  "select": true,
+  "model": "todos",
+  "status": "any", // WHERE status = *
+  "list_id": 1, // AND list_id = 1
+},
+{
+  "create": true, // Simple create
+  "model": "lists",
+  "title": "Most Important",
+  "description": "Things that should be high value."
+},
+{
+  "update": true,
+  "model": "todos",
+  "id": 1, // There should not be a time when you update without knowing the record id
+  "text": "this is new text of todo",
+  "status": "this is new status",
+}

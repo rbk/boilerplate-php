@@ -105,11 +105,11 @@ $app_config = array(
 ```
 
 ### Todo
+- Unit Testing (PHP Unit)
 - Create composer package
 - Abstract database interaction
 - Create database migration functions
 - Implement logging
-- Add testing
 - Query Hooks (before/after)
 - Convert $app_config to YAML? Maybe.
 
