@@ -28,7 +28,7 @@ class Crud
 
     // Validate input as integer.
     // Very important as it removes strings contained other SQL statements
-    $this->id = (isset($this->params['id'])) ? settype($this->id, 'integer') : false;
+    $this->id = (isset($this->params['id'])) ? settype($this->params['id'], 'integer') : false;
   }
 
   public function processGetParams()
