@@ -77,36 +77,36 @@ class App
 
         require($this->base_dir . '/classes/crud.php');
 
-        $myclass = new Crud($this->connection, $this->base_dir, $columns, $tablename, $this->params);
+        $crud = new Crud($this->connection, $this->base_dir, $columns, $tablename, $this->params, $this->debug);
 
         // ALL - LIMIT
         if (isset($this->params['all'])) {
-          $myclass->index();
+          $crud->index();
           return;
         }
         // Find one - WHERE CLAUSES
         if (isset($this->params['id']) && !isset($this->params['delete']) && !isset($this->params['update']) && !isset($this->params['create'])) {
-          $myclass->read($this->params['id']);
+          $crud->read($this->params['id']);
           return;
         }
         // Create one
         if (isset($this->params['create'])) {
-          $myclass->create();
+          $crud->create();
           return;
         }
         // Update one - WHERE CLAUSES
         if (isset($this->params['update']) && isset($this->params['id'])) {
-          $myclass->update();
+          $crud->update();
           return;
         }
         // Delete one - WHERE CLAUSES
         if (isset($this->params['delete']) ) {
-          $myclass->delete($this->params);
+          $crud->delete($this->params);
           return;
         }
         //  SEARCH
         if (isset($this->params['search']) ) {
-          $myclass->search($this->params);
+          $crud->search($this->params);
           return;
         }
       }

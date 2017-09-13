@@ -12,14 +12,17 @@ class Crud
   public $tablename;
   public $params;
   public $method;
+  public $sql;
+  public $debug;
 
-  function __construct($connection, $base_dir, $columns, $tablename, $params)
+  function __construct($connection, $base_dir, $columns, $tablename, $params, $debug)
   {
     $this->base_dir = $base_dir;
     $this->connection = $connection;
     $this->columns = $columns;
     $this->tablename = mysqli_real_escape_string($tablename);
     $this->params = $params;
+    $this->debug = $debug;
     $this->processGetParams();
   }
 
@@ -60,8 +63,8 @@ class Crud
   public function index()
   {
     $response = [];
-    $sql = "select * from $this->tablename";
-    $result = $this->connection->query($sql);
+    $this->sql = "select * from $this->tablename";
+    $result = $this->connection->query($this->sql);
     if ($result) {
       while($row = $result->fetch_assoc()) {
         $response[] = $row;
@@ -73,22 +76,16 @@ class Crud
   // POST
   public function create()
   {
-    $sql = "INSERT INTO `$this->tablename` ($this->columns) VALUES ($this->values)";
-    $result = $this->connection->query($sql);
+    $this->sql = "INSERT INTO `$this->tablename` ($this->columns) VALUES ($this->values)";
+    $result = $this->connection->query($this->sql);
     if ($result) {
-      $this->display_result(
-        array_merge(
-          array(
-            'id' => $this->connection->insert_id,
-            'query' => $sql,
-          ),$this->params
-        )
-      );
+      $this->display_result(array(
+        'id' => $this->connection->insert_id,
+      ));
     } else {
       $this->display_result(array(
         'message' => 'There was a problem inserting into the database.',
         'error' => 1,
-        'query' => $sql,
       ));
     }
   }
@@ -100,8 +97,8 @@ class Crud
     settype($id, 'integer');
 
     $response = [];
-    $sql = "select * from $this->tablename where id = " . $id;
-    $result = $this->connection->query($sql);
+    $this->sql = "select * from $this->tablename where id = " . $id;
+    $result = $this->connection->query($this->sql);
     if ($result->num_rows > 0) {
       while($row = $result->fetch_assoc()) {
         $response[] = $row;
@@ -111,7 +108,6 @@ class Crud
       $this->display_result(array(
         'message' => 'No results found.',
         'row_count' => 0,
-        'query' => $sql,
       ));
     }
 
@@ -122,26 +118,19 @@ class Crud
   {
     $id = $this->params['id'];
     settype($id, 'integer');
-    $sql = "UPDATE $this->tablename SET $this->update WHERE id=$id";
-    $result = $this->connection->query($sql);
+    $this->sql = "UPDATE $this->tablename SET $this->update WHERE id=$id";
+    $result = $this->connection->query($this->sql);
     if ($result) {
-      $this->display_result(
-        array_merge($this->params,
-          array(
-              'message' => 'Update row from ' . $this->tablename . ' with id ' . $id,
-              'updated' => 1,
-              'error' => 0,
-              'query' => $sql,
-              'id' => $id,
-            )
-        )
-      );
+      $this->display_result(array(
+        'updated' => 1,
+        'error' => 0,
+        'id' => $id,
+      ));
     } else {
       $this->display_result(array(
         'message' => 'Something went wrong with the update.',
         'updated' => 0,
         'error' => 1,
-        'query' => $sql,
       ));
     }
   }
@@ -156,20 +145,14 @@ class Crud
       // Very important as it removes strings contained other SQL statements
       settype($id, 'integer');
 
-      $sql = "DELETE FROM $this->tablename WHERE id = $id";
-      $result = $this->connection->query($sql);
+      $this->sql = "DELETE FROM $this->tablename WHERE id = $id";
+      $result = $this->connection->query($this->sql);
       if ($result) {
-        $this->display_result(
-          array_merge($this->params,
-            array(
-                'message' => 'Deleted row from ' . $this->tablename . ' with id ' . $id,
-                'deleted' => 1,
-                'error' => 0,
-                'query' => $sql,
-                'id' => $id,
-              )
-          )
-        );
+        $this->display_result(array(
+          'deleted' => 1,
+          'error' => 0,
+          'id' => $id,
+        ));
       }
     }
   }
@@ -189,13 +172,21 @@ class Crud
    */
   public function display_result($arg)
   {
-    if (is_array($arg)) {
-      echo json_encode($arg);
-    } else {
-      echo json_encode(array(
-        'result' => $arg
-      ));
+    $debug = [];
+    if ($this->debug) {
+      $debug = array(
+        'sql' => $this->sql,
+        'params' => $this->params,
+      );
     }
+    if (is_array($arg)) {
+      $return_array = array_merge($arg, $debug);
+    } else {
+      $return_array = array_merge(array('result' => $arg), $debug);
+    }
+    echo json_encode($return_array);
+
+
   }
 
 }
