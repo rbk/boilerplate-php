@@ -1,6 +1,7 @@
 <?php
 /**
  * Query system for basic CRUD operations
+ * Creates SQL queries based on parameters
  * @todo Abstract query building
  */
 class Crud
@@ -17,10 +18,9 @@ class Crud
     $this->base_dir = $base_dir;
     $this->connection = $connection;
     $this->columns = $columns;
-    $this->tablename = $tablename;
+    $this->tablename = mysqli_real_escape_string($tablename);
     $this->params = $params;
     $this->processGetParams();
-    // this is an orm file, not a api route
   }
 
   public function processGetParams()

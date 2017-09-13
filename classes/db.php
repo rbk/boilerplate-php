@@ -1,9 +1,7 @@
 <?php
 /**
- * Database helper classes
- * @description:
- * Connects to database, builds queries for creating tables
- * based on config models.
+ * Database helper class
+ * @description - Builds queries to create database and tables based on config, connects to database
  * @todo Abstract query builder
  */
 class Database extends App
@@ -169,14 +167,6 @@ class Database extends App
      * ALTER TABLE `quotes` CHANGE `name` `name` VARCHAR(200);
      */
   }
-
-  /**
-   * Advanced query building functions I may need
-   */
-  public function query($string, $array = array()) {}
-  private function update() {}
-  private function insert() {}
-  private function select() {}
 
 }
 
