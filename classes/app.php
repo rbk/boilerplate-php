@@ -100,7 +100,7 @@ class App
           return;
         }
         // Delete one - WHERE CLAUSES
-        if (isset($this->params['delete']) ) {
+        if (isset($this->params['delete']) && isset($this->params['id'])) {
           $crud->delete($this->params);
           return;
         }

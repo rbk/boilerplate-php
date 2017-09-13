@@ -14,6 +14,7 @@ class Crud
   public $method;
   public $sql;
   public $debug;
+  public $id;
 
   function __construct($connection, $base_dir, $columns, $tablename, $params, $debug)
   {
@@ -24,6 +25,10 @@ class Crud
     $this->params = $params;
     $this->debug = $debug;
     $this->processGetParams();
+
+    // Validate input as integer.
+    // Very important as it removes strings contained other SQL statements
+    $this->id = (isset($this->params['id'])) ? settype($this->id, 'integer') : false;
   }
 
   public function processGetParams()
@@ -93,11 +98,8 @@ class Crud
   // GET
   public function read()
   {
-    $id = $this->params['id'];
-    settype($id, 'integer');
-
     $response = [];
-    $this->sql = "select * from $this->tablename where id = " . $id;
+    $this->sql = "select * from $this->tablename where id = " . $this->id;
     $result = $this->connection->query($this->sql);
     if ($result->num_rows > 0) {
       while($row = $result->fetch_assoc()) {
@@ -116,15 +118,13 @@ class Crud
   // POST
   public function update()
   {
-    $id = $this->params['id'];
-    settype($id, 'integer');
-    $this->sql = "UPDATE $this->tablename SET $this->update WHERE id=$id";
+    $this->sql = "UPDATE $this->tablename SET $this->update WHERE id=$this->id";
     $result = $this->connection->query($this->sql);
     if ($result) {
       $this->display_result(array(
         'updated' => 1,
         'error' => 0,
-        'id' => $id,
+        'id' => $this->id,
       ));
     } else {
       $this->display_result(array(
@@ -138,22 +138,21 @@ class Crud
   // DELETE
   public function delete()
   {
-    $id = mysqli_real_escape_string($this->connection,$this->params['id']);
-    if (isset($this->params['id']) && isset($this->params['delete'])) {
-
-      // Validate input as integer.
-      // Very important as it removes strings contained other SQL statements
-      settype($id, 'integer');
-
-      $this->sql = "DELETE FROM $this->tablename WHERE id = $id";
-      $result = $this->connection->query($this->sql);
-      if ($result) {
-        $this->display_result(array(
-          'deleted' => 1,
-          'error' => 0,
-          'id' => $id,
-        ));
-      }
+    $this->sql = "DELETE FROM $this->tablename WHERE id = $this->id";
+    $result = $this->connection->query($this->sql);
+    if ($result) {
+      $this->display_result(array(
+        'deleted' => 1,
+        'error' => 0,
+        'id' => $this->id,
+      ));
+    } else {
+      $this->display_result(array(
+        'deleted' => 0,
+        'error' => 1,
+        'id' => $this->id,
+        'message' => 'Does not exist.'
+      ));
     }
   }
 
