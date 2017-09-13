@@ -55,10 +55,9 @@ class Database extends App
    */
   private function connectTest()
   {
-    $connection = new mysqli($this->host, $this->user, $this->password);
+    @$connection = new mysqli($this->host, $this->user, $this->password);
     if (!empty($connection->connect_error)) {
-      $this->messages[] = 'No database connection. Check Credentials.';
-      die();
+      die($connection->connect_error);
     }
   }
 
