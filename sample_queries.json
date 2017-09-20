@@ -1,13 +1,14 @@
 {
-  "select": true,
-  "model": "todos",
-  "where": true,
-  "text": true
-  "like": "machine learning", // WHERE * LIKE '%machine learning%'
+  "more difficult" : "", // $todos->select().where('text').like('machine learning')
+  "below_sample" : true
 },
 {
-  "more difficult" : "", // $todos->select().where('text').like('machine learning')
-}
+  // SEARCH
+  "select": true,
+  "model" : "todos",
+  "where" : "text",
+  "like" : "machine learning",
+},
 {
   "create": true, // Simple create with reference
   "model": "todos",

@@ -21,14 +21,17 @@ class Crud
     $this->base_dir = $base_dir;
     $this->connection = $connection;
     $this->columns = $columns;
-    $this->tablename = mysqli_real_escape_string($tablename);
+    $this->tablename = $connection->real_escape_string($tablename);
     $this->params = $params;
     $this->debug = $debug;
     $this->processGetParams();
 
     // Validate input as integer.
     // Very important as it removes strings contained other SQL statements
-    $this->id = (isset($this->params['id'])) ? settype($this->params['id'], 'integer') : false;
+    if(isset($this->params['id'])) {
+      settype($this->params['id'], 'integer');
+      $this->id = $this->params['id'];
+    }
   }
 
   public function processGetParams()
@@ -171,21 +174,31 @@ class Crud
    */
   public function display_result($arg)
   {
-    $debug = [];
-    if ($this->debug) {
-      $debug = array(
-        'sql' => $this->sql,
-        'params' => $this->params,
-      );
+    if (!is_array($arg)) {
+      $arg = array('result' => $arg);
+      error_log('not an array');
     }
-    if (is_array($arg)) {
-      $return_array = array_merge($arg, $debug);
+
+    $return_array = $arg;
+
+    // array of arrays
+    if (isset($return_array[0]) && gettype($return_array[0]) == 'array') {
+      foreach($return_array as $array) {
+        if ($this->debug) {
+          $array['sql'] = $this->sql;
+          $array['params'] = $this->params;
+        }
+        $return_array[] = $array;
+      }
+
     } else {
-      $return_array = array_merge(array('result' => $arg), $debug);
+      // single associative arrays
+      if ($this->debug) {
+        $return_array['sql'] = $this->sql;
+        $return_array['params'] = $this->params;
+      }
     }
     echo json_encode($return_array);
-
-
   }
 
 }

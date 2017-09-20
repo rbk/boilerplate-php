@@ -1,10 +1,10 @@
 <?php
-
+require_once(__DIR__ . '/vendor/autoload.php');
 require('classes/app.php');
 require('classes/db.php');
 
 $app_config = array(
-  'debug' => false,
+  'debug' => true,
   'database' => array(
     'host' => 'localhost',
     'user' => 'root',
@@ -12,6 +12,14 @@ $app_config = array(
     'database' => 'boilerplate_php'
   ),
   'models' => array(
+    array(
+      'name' => 'users',
+      'columns' => [
+          'name' => 'varchar(255)',
+          'email' => 'varchar(255)',
+          'password_hash' => 'varchar(255)'
+        ]
+    ),
   //   array(
   //     'name' => 'quotes',
   //     'columns' => [

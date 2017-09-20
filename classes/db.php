@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Database helper class
  * @description - Builds queries to create database and tables based on config, connects to database
@@ -132,7 +133,11 @@ class Database extends App
       ";
 
       if ($this->debug) {
-        print_r($sql);
+        echo "--\n";
+        echo "-- Table: $model->name\n";
+        echo "-- \n\n";
+        echo SqlFormatter::format($sql, false);
+        echo "\n\n";
       } else {
         /*
         * Attempt to Create Table

@@ -1,0 +1,5 @@
+{
+    "require": {
+        "jdorn/sql-formatter": "^1.2"
+    }
+}

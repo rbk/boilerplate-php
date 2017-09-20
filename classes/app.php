@@ -28,10 +28,10 @@ class App
     $this->db = new Database($config['database'], $this->debug);
     $this->db->model($config['models']);
 
-    if ($this->debug) {
-      error_log('Ending app in app.php for debugging database table creation');
-      return;
-    }
+    // if ($this->debug) {
+    //   error_log('Ending app in app.php for debugging database table creation');
+    //   return;
+    // }
 
     $this->connection = $this->db->getConnection();
     $this->method = (isset($_SERVER['REQUEST_METHOD'])) ? $_SERVER['REQUEST_METHOD'] : 'GET';
