@@ -132,7 +132,7 @@ class Database extends App
         );
       ";
 
-      if ($this->debug) {
+      if (!$this->debug) {
         echo "--\n";
         echo "-- Table: $model->name\n";
         echo "-- \n\n";

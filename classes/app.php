@@ -20,6 +20,7 @@ class App
   protected $method;
   protected $headers;
   private $debug;
+  protected $params;
 
   function __construct($config)
   {
@@ -48,18 +49,25 @@ class App
    */
   public function init() {
 
+    $content_type = (isset($this->headers['Content-Type'])) ? $this->headers['Content-Type'] : '';
+
     if ($this->method == 'POST') {
+      error_log('POST');
+
       // Posting from HTML form
-      if (strpos($this->headers['Content-Type'], 'x-www-form-urlencoded') !== false) {
+      if (strpos($content_type, 'x-www-form-urlencoded') !== false) {
         $this->params = $_POST;
+        error_log('x-www');
       }
       // Ajax POST
-      if (strpos($this->headers['Content-Type'], 'plain') !== false) {
+      if ( $content_type == 'application/json' || strpos($content_type, 'plain') !== false) {
         $this->params = (array)json_decode(file_get_contents('php://input'));
+        error_log('ajax');
       }
     }
     if ($this->method == 'GET') {
       $this->params = $_GET;
+      error_log('GET');
     }
 
     if (count($GLOBALS['routes']) < 1){
@@ -91,6 +99,7 @@ class App
         }
         // Create one
         if (isset($this->params['create'])) {
+          error_log(print_r($this->params, true));
           $crud->create();
           return;
         }
